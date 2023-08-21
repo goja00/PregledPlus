@@ -4,35 +4,27 @@ $(document).ready(function () {
     loadDataTable();
     $('#EditModal').on('show.bs.modal', function (e) {
         var podaci = dataTable.row($(e.relatedTarget).closest('tr')).data();
-        console.log(podaci)
         $('#prodid').val(podaci.id);
-        $('#Ime').val(podaci.ime);
-        $('#Prezime').val(podaci.prezime);
-        $('#Email').val(podaci.email);
-        $('#Datum').val(podaci.datum);
-        $('#BrojTelefona').val(podaci.brojTelefona);
-        $('#Status').val(podaci.status);
-        $('#Reg_oznaka').val(podaci.reg_oznaka);
+        $('#Naziv1').val(podaci.naziv);
+        $('#Opis1').val(podaci.opis);
+        $('#Cena1').val(podaci.cena);
+       
     })
 });
 
 function loadDataTable() {
     dataTable = $('#myTable').DataTable({
         "ajax": {
-            "url": "/Termin/GetAll",
+            "url": "/Usluga/GetAll",
             "dataSrc": "",
             "type": "GET",
             "datatype": "json"
         },
         "columns": [
             { "data": "id", "width": "5%" },
-            { "data": "ime", "width": "5%" },
-            { "data": "prezime", "width": "5%" },
-            { "data": "email", "width": "5%" },
-            { "data": "datum", "width": "10%"},
-            { "data": "status", "width": "5%" },
-            { "data": "brojTelefona", "width": "5%" },
-            { "data": "reg_oznaka", "width": "5%" },
+            { "data": "naziv", "width": "5%" },
+            { "data": "opis", "width": "5%" },
+            { "data": "cena", "width": "5%" },
             {
                 "data": "id",
                 "render": function (data) {
@@ -54,11 +46,11 @@ function postaviId(id) {
 function izmeni(prodid) {
     $.ajax({
         type: "GET",
-        url: "/Termin/GetOne/",
+        url: "/Usluga/GetOne/",
         data: { id: prodid },
         success: function (item) {
             element = item;
-            
+
             $('#EditModal').modal('show');
         }
     })

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PregledPlus.Data;
 
@@ -11,9 +12,10 @@ using PregledPlus.Data;
 namespace PregledPlus.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20230821010044_dodavanjePoruke")]
+    partial class dodavanjePoruke
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -255,7 +257,7 @@ namespace PregledPlus.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ime_prezime")
+                    b.Property<string>("ime")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -264,6 +266,10 @@ namespace PregledPlus.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("poruka")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("prezime")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

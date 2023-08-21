@@ -17,7 +17,7 @@ namespace PregledPlus.Controllers
         private IToastNotification toast;
         public TerminController(IUnitOfWork _unitOfWork, IToastNotification _toast)
         {
-            unitOfWork = _unitOfWork;  
+            unitOfWork = _unitOfWork;
             toast = _toast;
         }
         public IActionResult Index()
@@ -25,9 +25,9 @@ namespace PregledPlus.Controllers
             return View();
         }
 
-       
+
         [HttpGet]
-        public IActionResult GetAll() 
+        public IActionResult GetAll()
         {
             var item = unitOfWork.TerminRepository.GetAll();
             return Json(item);
@@ -35,13 +35,15 @@ namespace PregledPlus.Controllers
         [HttpGet]
         public IActionResult GetOne(int id)
         {
-            var item=unitOfWork.TerminRepository.GetFirstOrDefault(x=>x.id==id);    
+            Termin item = unitOfWork.TerminRepository.GetFirstOrDefault(x => x.id == id);
             return Json(item);
         }
         [HttpPost]
-        
+
         public IActionResult Create(Termin termin)
         {
+            int i=unitOfWork.TerminRepository.GetAll().OrderByDescending(x => x.id).Select(x => x.id).First();
+            termin.id = i + 1;
             if (ModelState.IsValid)
             {
                 unitOfWork.TerminRepository.Add(termin);
@@ -55,6 +57,33 @@ namespace PregledPlus.Controllers
                 return RedirectToAction("Index", "CMS");
             }
 
+        }
+        public IActionResult Update(Termin termin)
+        {
+            if (ModelState.IsValid)
+            {
+                unitOfWork.TerminRepository.Update(termin);
+                unitOfWork.Save();
+                toast.AddSuccessToastMessage("Termin je uspesno izmenjen!");
+                return RedirectToAction("Index", "CMS");
+            }
+            else
+            {
+                toast.AddErrorToastMessage("Doslo je do greske pri izmeni termina!");
+                return RedirectToAction("Index", "CMS");
+            }
+        }
+        public IActionResult Delete(int id)
+        {
+
+            Termin prod = unitOfWork.TerminRepository.GetFirstOrDefault(x => x.id == id);
+            if (prod != null)
+            {
+                unitOfWork.TerminRepository.Delete(prod);
+                unitOfWork.Save();
+            }
+            toast.AddSuccessToastMessage("Termin je uspesno izbrisan!");
+            return RedirectToAction("Index", "CMS");
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PregledPlus.Data;
 
@@ -11,9 +12,10 @@ using PregledPlus.Data;
 namespace PregledPlus.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20230820094826_dodavanjeAtributa")]
+    partial class dodavanjeAtributa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,35 +245,6 @@ namespace PregledPlus.Migrations
                     b.ToTable("Newsletters");
                 });
 
-            modelBuilder.Entity("PregledPlus.Models.Poruka", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
-
-                    b.Property<string>("email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ime_prezime")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("naslov")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("poruka")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id");
-
-                    b.ToTable("Porukas");
-                });
-
             modelBuilder.Entity("PregledPlus.Models.Termin", b =>
                 {
                     b.Property<int>("id")
@@ -301,6 +274,7 @@ namespace PregledPlus.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("reg_oznaka")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("status")

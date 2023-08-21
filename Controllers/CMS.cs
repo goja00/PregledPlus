@@ -10,19 +10,40 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using Python.Runtime;
+using NToastNotify;
 
 namespace PregledPlus.Controllers
 {
     public class CMS : Controller
     {
         private IUnitOfWork unitOfWork;
-        
-        
-        public CMS(IUnitOfWork _unitOfWork)
-        {
+        private IToastNotification toast;
 
+        public CMS(IUnitOfWork _unitOfWork, IToastNotification _toast)
+        {
+            toast = _toast;
             unitOfWork = _unitOfWork;
         }
+        public IActionResult UslugaView()
+        {
+            return View("Usluge");
+        }
+        public IActionResult savePoruka(Poruka por)
+        {
+            if(ModelState.IsValid)
+            {
+                unitOfWork.PorukaRepository.Add(por);
+                unitOfWork.Save();
+                toast.AddSuccessToastMessage("Poruka je uspesno dodata!");
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                toast.AddErrorToastMessage("Doslo je do greske pri kreiranju poruke!");
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
         public async Task<string> getSessionToken()
         {
             DateTime unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -73,9 +94,9 @@ namespace PregledPlus.Controllers
             List<string> brojTelefona = new List<string>();
             List<string> status = new List<string>();
             List<string> datum = new List<string>();
-
+            List<string> registracija = new List<string>();
             IEnumerator<JToken> enumerator = jsonArray.GetEnumerator();
-            Termin ter=new Termin(); //opet se vracam na isto sranje sa null vrednosti
+            Termin ter=new Termin(); 
 
 
             while (enumerator.MoveNext())
@@ -89,6 +110,7 @@ namespace PregledPlus.Controllers
                         brojTelefona.Add((string)property["client"]["cellPhone"]);
                         status.Add((string)property["client"]["status"]);
                 datum.Add((string)property["appointmentDateTimeClient"]);
+                registracija.Add((string)property["client"]["homePhone"]);
 
            }
             int j = 1;
@@ -96,7 +118,7 @@ namespace PregledPlus.Controllers
             for(int i=0;i<datum.Count;i++)
             {
                 
-                if (unitOfWork.TerminRepository.GetFirstOrDefault(x => x.datum == datum[i]) != null) { continue; }
+                if (unitOfWork.TerminRepository.GetFirstOrDefault(x => x.datum == datum[i]) != null) { j++; continue; }
                 else
                 {
                     ter.id = j;
@@ -106,6 +128,7 @@ namespace PregledPlus.Controllers
                     ter.email = email[i];
                     ter.brojTelefona = brojTelefona[i];
                     ter.status = status[i];
+                    ter.reg_oznaka = registracija[i];
                     unitOfWork.TerminRepository.Add(ter);
                     unitOfWork.Save();
                     j++;

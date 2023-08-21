@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 using PregledPlus.Models;
+using PregledPlus.Repository;
 using System.Diagnostics;
 
 namespace PregledPlus.Controllers
@@ -7,11 +9,14 @@ namespace PregledPlus.Controllers
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
-
-		public HomeController(ILogger<HomeController> logger)
+        private IUnitOfWork unitOfWork;
+        private IToastNotification toast;
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork _unitOfWork, IToastNotification _toast)
 		{
 			_logger = logger;
-		}
+            unitOfWork = _unitOfWork;
+            toast = _toast;
+        }
         
         public IActionResult Index()
 		{
@@ -27,6 +32,23 @@ namespace PregledPlus.Controllers
         {
             return View();
         }
+
+        public IActionResult addEmail(Newsletter ns)
+		{
+			if(ModelState.IsValid) 
+			{
+				unitOfWork.NewsletterRepository.Add(ns);
+				unitOfWork.Save();
+                toast.AddSuccessToastMessage("Email je uspesno dodat!");
+                return View("Index");
+			}
+			else
+			{
+                toast.AddErrorToastMessage("Doslo je do greske pri dodavanju emaila!");
+				return RedirectToAction("Index");
+
+            }
+		}
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

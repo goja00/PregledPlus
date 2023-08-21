@@ -29,6 +29,9 @@ namespace PregledPlus.Models
         [Required]
         [DisplayName("Email")]
         public string? email { get; set; }
+        
+        [DisplayName("Registracija")]
+        public string? reg_oznaka { get; set; }
 
 
 

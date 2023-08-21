@@ -21,7 +21,8 @@ public class DBContext : IdentityDbContext<IdentityUser>
     }
     public DbSet<Termin> Termins { get; set; }
     public DbSet<Usluga> Uslugas { get; set; }  
-    public DbSet<Vozilo> Vozilos { get; set; }
+ 
     public DbSet<Newsletter> Newsletters { get; set; }
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+    public DbSet<Poruka> Porukas { get; set; }      
 }

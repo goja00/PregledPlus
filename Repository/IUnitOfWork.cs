@@ -3,10 +3,10 @@
     public interface IUnitOfWork
     {
         ITerminRepository TerminRepository { get; }
-        IVoziloRepository VoziloRepository { get; } 
         IUslugaRepository UslugaRepository { get; }
         INewsletterRepository NewsletterRepository { get; } 
         IApplicationUserRepository ApplicationUserRepository { get; }
+        IPorukaRepository PorukaRepository { get; }
         void Save();
     }
 }

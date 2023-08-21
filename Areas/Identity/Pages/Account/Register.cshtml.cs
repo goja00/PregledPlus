@@ -106,25 +106,29 @@ namespace PregledPlus.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             [Required]
-            [DisplayName("First Name")]
+            [DisplayName("Ime")]
             public string FirstName { get; set; }
             [Required]
-            [DisplayName("Last Name")]
+            [DisplayName("Prezime")]
             public string LastName { get; set; }
             [Required]
+            [DisplayName("Adresa")]
             public string Address { get; set; }
             [Required]
+            [DisplayName("Grad")]
             public string Town { get; set; }
             
-            [DisplayName("Zip code")]
+            [DisplayName("Poštanski broj")]
             public int ZipCode { get; set; }
             [Required]
-            [DisplayName("Phone number")]
+            [DisplayName("Broj telefona")]
             public string PhoneNumber { get; set; }
             [ValidateNever]
             public IEnumerable<SelectListItem> RoleList { get; set; }
             public string Role { get; set; }
-
+            [Required]
+            [DisplayName("Registracija")]
+            public string reg_oznaka { get; set; }
 
         }
 
@@ -159,10 +163,25 @@ namespace PregledPlus.Areas.Identity.Pages.Account
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
-
+                user.FirstName = Input.FirstName;
+                user.LastName = Input.LastName;
+                user.Address = Input.Address;
+                user.Town = Input.Town;
+                user.ZipCode = Input.ZipCode;
+                user.PhoneNumber = Input.PhoneNumber;
+                user.reg_oznaka = Input.reg_oznaka;
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    if(Input.Role==null)
+                    {
+                        await _userManager.AddToRoleAsync(user, Roles.Role_Customer);
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, Input.Role);
+                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -196,11 +215,11 @@ namespace PregledPlus.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private IdentityUser CreateUser()
+        private ApplicationUser CreateUser()
         {
             try
             {
-                return Activator.CreateInstance<IdentityUser>();
+                return Activator.CreateInstance<ApplicationUser>();
             }
             catch
             {
